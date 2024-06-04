@@ -1,4 +1,6 @@
-# The Platinum Searcher [![Build Status](https://travis-ci.org/monochromegane/the_platinum_searcher.svg?branch=master)](https://travis-ci.org/monochromegane/the_platinum_searcher) [![wercker status](https://app.wercker.com/status/59ef90ac217537abc0994546958037f3/s/master "wercker status")](https://app.wercker.com/project/bykey/59ef90ac217537abc0994546958037f3)
+# mack
+
+ack-for-markdown. An extension of platinmun seacher to add markdown structure awareness.
 
 A code search tool similar to `ack` and `the_silver_searcher(ag)`. It supports multi platforms and multi encodings.
 
@@ -74,14 +76,14 @@ You can use pt with [pt.el](https://github.com/bling/pt.el), which can be instal
 ### Developer
 
 ```sh
-$ go get -u github.com/monochromegane/the_platinum_searcher/...
+$ go get -u github.com/acmerocket/mack/...
 ```
 
 ### User
 
 Download from the following url.
 
-- [https://github.com/monochromegane/the_platinum_searcher/releases](https://github.com/monochromegane/the_platinum_searcher/releases)
+- [https://github.com/acmerocket/mack/releases](https://github.com/acmerocket/mack/releases)
 
 Or, you can use Homebrew (Only macOS).
 
@@ -90,6 +92,10 @@ $ brew install pt
 ```
 
 `pt` is an alias for `the_platinum_searcher` in Homebrew.
+
+## Building
+
+FIXME
 
 ## Contribution
 
@@ -103,9 +109,8 @@ $ brew install pt
 
 ## License
 
-[MIT](https://github.com/monochromegane/the_platinum_searcher/blob/master/LICENSE)
+[MIT](https://github.com/acmerocket/mack/blob/master/LICENSE)
 
 ## Author
 
 [monochromegane](https://github.com/monochromegane)
-
