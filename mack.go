@@ -13,7 +13,7 @@ import (
 	"github.com/monochromegane/terminal"
 )
 
-const version = "2.2.0"
+const version = "0.1.0"
 
 const (
 	ExitCodeOK = iota
@@ -47,11 +47,12 @@ func (p MarkdownAck) Run(args []string) int {
 		if ferr, ok := err.(*flags.Error); ok && ferr.Type == flags.ErrHelp {
 			return ExitCodeOK
 		}
+		fmt.Printf("ERROR %s\n", err)
 		return ExitCodeError
 	}
 
 	if opts.Version {
-		fmt.Printf("pt version %s\n", version)
+		fmt.Printf("mack version %s\n", version)
 		return ExitCodeOK
 	}
 
