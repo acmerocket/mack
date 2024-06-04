@@ -1,6 +1,8 @@
 package mack
 
-import "github.com/jessevdk/go-flags"
+import (
+	"github.com/jessevdk/go-flags"
+)
 
 // Top level options
 type Option struct {
@@ -122,9 +124,9 @@ type SearchOption struct {
 	Follow                 bool         `short:"f" long:"follow" description:"Follow symlinks"`
 	Hidden                 bool         `long:"hidden" description:"Search hidden files and directories"`
 	SearchStream           bool         // Input from pipe. Not user option.
-	MarkdownQuery          []string     `long:"md" description:"Markdown query"`
-	HtmlQuery              []string     `long:"ht" description:"HTML query"`
-	JsonQuery              []string     `long:"jq" description:"JSON query"`
+	MarkdownQuery          bool         `short:"m" description:"Parse PATTERN as a Markdown query against MD files"`
+	HtmlQuery              bool         `short:"c" description:"Parse PATTERN as a CSS selections against HTML files"`
+	JsonQuery              bool         `short:"j" description:"Parse PATTERN as a JSON query against JSON files"`
 }
 
 func (o *SearchOption) SetFilesWithRegexp(p string) {
