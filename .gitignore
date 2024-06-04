@@ -4,3 +4,4 @@ pt
 !cmd/pt
 Godeps/_workspace/
 main
+.vscode/

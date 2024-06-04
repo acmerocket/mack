@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/jessevdk/go-flags"
 	"github.com/monochromegane/conflag"
@@ -44,10 +45,11 @@ func (p MarkdownAck) Run(args []string) int {
 
 	args, err := parser.ParseArgs(args)
 	if err != nil {
+		fmt.Fprintf(p.Err, "ERROR %s\n", err)
+
 		if ferr, ok := err.(*flags.Error); ok && ferr.Type == flags.ErrHelp {
 			return ExitCodeOK
 		}
-		fmt.Printf("ERROR %s\n", err)
 		return ExitCodeError
 	}
 
@@ -56,7 +58,46 @@ func (p MarkdownAck) Run(args []string) int {
 		return ExitCodeOK
 	}
 
-	if len(args) == 0 && !opts.SearchOption.EnableFilesWithRegexp {
+	if opts.FileTypeOption.ListTypes {
+		for _, element := range lang_spec {
+			// place-holder
+			fmt.Printf("  %s: %s\n", element.Name, strings.Join(element.Exts, ", "))
+		}
+		return ExitCodeOK
+	}
+
+	if len(opts.FileTypeOption.FileType) > 0 {
+		// got filetype option, gather all extentions
+		opts.FileTypeOption.ExtSet = make(map[string]bool)
+		for _, ftype := range opts.FileTypeOption.FileType {
+			if spec, ok := lang_spec[ftype]; ok {
+
+				for _, ext := range spec.Exts {
+					opts.FileTypeOption.ExtSet[ext] = true
+				}
+			}
+		}
+
+		builder := strings.Builder{}
+		builder.WriteString(".*\\.(")
+		for ext := range opts.FileTypeOption.ExtSet {
+			builder.WriteString(ext)
+			builder.WriteString("|")
+		}
+		regex_str := builder.String()            // convert to string
+		regex_str = regex_str[:len(regex_str)-1] // strip trailing '|'
+		regex_str += ")$"
+
+		if opts.SearchOption.FileNamesOnly {
+			opts.SearchOption.EnableFilesWithRegexp = true
+			opts.SearchOption.PatternFilesWithRegexp = regex_str
+		} else {
+			opts.SearchOption.FileSearchRegexp = regex_str
+		}
+	}
+
+	if len(args) == 0 && !(opts.SearchOption.EnableFilesWithRegexp) {
+		fmt.Printf("No regular expression found.\n")
 		parser.WriteHelp(p.Err)
 		return ExitCodeError
 	}

@@ -6,9 +6,10 @@ import (
 
 // Top level options
 type Option struct {
-	Version      bool          `long:"version" description:"Show version"`
-	OutputOption *OutputOption `group:"Output Options"`
-	SearchOption *SearchOption `group:"Search Options"`
+	Version        bool            `long:"version" description:"Show version"`
+	OutputOption   *OutputOption   `group:"Output Options"`
+	SearchOption   *SearchOption   `group:"Search Options"`
+	FileTypeOption *FileTypeOption `group:"File Type Options"`
 }
 
 // Output options.
@@ -116,12 +117,13 @@ type SearchOption struct {
 	GlobalGitIgnore        bool         `long:"global-gitignore" description:"Use git's global gitignore file for ignore patterns"`
 	HomePtIgnore           bool         `long:"home-ptignore" description:"Use $Home/.ptignore file for ignore patterns"`
 	SkipVcsIgnore          bool         `short:"U" long:"skip-vcs-ignores" description:"Don't use VCS ignore file for ignore patterns"`
+	FileNamesOnly          bool         `short:"f" description:"Only print the files selected, without searching. The PATTERN must not be specified."`
 	FilesWithRegexp        func(string) `short:"g" description:"Print filenames matching PATTERN"`
 	EnableFilesWithRegexp  bool         // Enable files with regexp. Not user option.
 	PatternFilesWithRegexp string       // Pattern files with regexp. Not user option.
 	FileSearchRegexp       string       `short:"G" long:"file-search-regexp" description:"PATTERN Limit search to filenames matching PATTERN"`
 	Depth                  int          `long:"depth" default:"25" description:"Search up to NUM directories deep"`
-	Follow                 bool         `short:"f" long:"follow" description:"Follow symlinks"`
+	Follow                 bool         `long:"follow" description:"Follow symlinks"`
 	Hidden                 bool         `long:"hidden" description:"Search hidden files and directories"`
 	SearchStream           bool         // Input from pipe. Not user option.
 	MarkdownQuery          bool         `short:"m" description:"Parse PATTERN as a Markdown query against MD files"`
@@ -140,15 +142,32 @@ func newSearchOption() *SearchOption {
 	return opt
 }
 
+type FileTypeOption struct {
+	//-t X, --type=X  Include only X files, where X is a filetype, e.g. python, html, markdown, etc
+	FileType []string `short:"t" long:"type" description:"Include only X files, where X is a filetype, e.g. python, html, markdown, etc"`
+
+	//-T X, --type=noX Exclude X files, where X is a filetype.
+	//ExcludeType []string `short:"T" long:"not-type" description:"Exclude X files, where X is a filetype."`
+	// SKIPPING for now
+
+	//-k, --known-types Include only files of types that ack recognizes.
+	KnownTypes bool `short:"k" long:"known-types" description:"Include only files of types that mack recognizes."`
+
+	//--help-types Display all known types, and how they're defined.
+	ListTypes bool `long:"help-types" description:"Display all known types, and how they're defined."`
+
+	ExtSet map[string]bool // private, to store all the interesting file name regexes.
+}
+
+func newFileTypeOption() *FileTypeOption {
+	opt := &FileTypeOption{}
+	return opt
+}
+
 func newOptionParser(opts *Option) *flags.Parser {
-	output := flags.NewNamedParser("mack", flags.Default)
-	output.AddGroup("Output Options", "", &OutputOption{})
-
-	search := flags.NewNamedParser("mack", flags.Default)
-	search.AddGroup("Search Options", "", &SearchOption{})
-
 	opts.OutputOption = newOutputOption()
 	opts.SearchOption = newSearchOption()
+	opts.FileTypeOption = newFileTypeOption()
 
 	parser := flags.NewParser(opts, flags.Default)
 	parser.Name = "mack"
