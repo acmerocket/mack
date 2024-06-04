@@ -1,5 +1,5 @@
 *.test
-the_platinum_searcher
+mack
 pt
 !cmd/pt
 Godeps/_workspace/

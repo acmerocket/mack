@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import (
 	"fmt"
@@ -22,11 +22,11 @@ const (
 
 var opts Option
 
-type PlatinumSearcher struct {
+type MarkdownAck struct {
 	Out, Err io.Writer
 }
 
-func (p PlatinumSearcher) Run(args []string) int {
+func (p MarkdownAck) Run(args []string) int {
 
 	parser := newOptionParser(&opts)
 
@@ -94,11 +94,11 @@ func (p PlatinumSearcher) Run(args []string) int {
 	return ExitCodeOK
 }
 
-func (p PlatinumSearcher) patternFrom(args []string) string {
+func (p MarkdownAck) patternFrom(args []string) string {
 	return args[0]
 }
 
-func (p PlatinumSearcher) rootsFrom(args []string) []string {
+func (p MarkdownAck) rootsFrom(args []string) []string {
 	if len(args) > 1 {
 		return args[1:]
 	} else {
@@ -106,7 +106,7 @@ func (p PlatinumSearcher) rootsFrom(args []string) []string {
 	}
 }
 
-func (p PlatinumSearcher) givenStdin() bool {
+func (p MarkdownAck) givenStdin() bool {
 	fi, err := os.Stdin.Stat()
 	if runtime.GOOS == "windows" {
 		if err == nil {
@@ -125,7 +125,7 @@ func (p PlatinumSearcher) givenStdin() bool {
 	return false
 }
 
-func (p PlatinumSearcher) noRootPathIn(args []string) bool {
+func (p MarkdownAck) noRootPathIn(args []string) bool {
 	return len(args) == 1
 }
 

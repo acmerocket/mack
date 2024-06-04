@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import (
 	"bytes"
@@ -70,7 +70,7 @@ loop:
 			c := scan(&match, cbuf[0:newLine], pattern, read, encoding, g.column)
 			// matchLines = append(matchLines, m...)
 			offset = len(cbuf[newLine+1:])
-			for i, _ := range cbuf[newLine+1:] {
+			for i := range cbuf[newLine+1:] {
 				buf[0+i] = cbuf[newLine+1+i]
 			}
 			read += c
@@ -87,9 +87,9 @@ loop:
 
 var NewLineBytes = []byte{10}
 
-func scanNewLine(buf []byte) int {
-	return bytes.Count(buf, NewLineBytes)
-}
+//func scanNewLine(buf []byte) int {
+//	return bytes.Count(buf, NewLineBytes)
+//}
 
 func scan(match *match, buf, pattern []byte, base, encoding int, column bool) int {
 	offset, newLineCount := 0, 0

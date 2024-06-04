@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import (
 	"path/filepath"

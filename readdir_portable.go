@@ -1,6 +1,7 @@
+//go:build appengine || (!linux && !darwin && !freebsd && !openbsd && !netbsd)
 // +build appengine !linux,!darwin,!freebsd,!openbsd,!netbsd
 
-package the_platinum_searcher
+package mack
 
 import (
 	"io/ioutil"

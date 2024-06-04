@@ -4,7 +4,7 @@ import (
 	"os"
 	"runtime"
 
-	pt "github.com/acmerocket/mack"
+	mack "github.com/acmerocket/mack"
 )
 
 func init() {
@@ -16,7 +16,7 @@ func init() {
 }
 
 func main() {
-	pt := pt.PlatinumSearcher{Out: os.Stdout, Err: os.Stderr}
-	exitCode := pt.Run(os.Args[1:])
+	mack := mack.MarkdownAck{Out: os.Stdout, Err: os.Stderr}
+	exitCode := mack.Run(os.Args[1:])
 	os.Exit(exitCode)
 }

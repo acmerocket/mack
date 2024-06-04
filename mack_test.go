@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import (
 	"io/ioutil"
@@ -14,7 +14,7 @@ func BenchmarkPT(b *testing.B) {
 		args := args
 		b.Run(name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				ret := PlatinumSearcher{Out: ioutil.Discard, Err: os.Stderr}.Run(args)
+				ret := MarkdownAck{Out: ioutil.Discard, Err: os.Stderr}.Run(args)
 				if ret != 0 {
 					b.Fatal("failed")
 				}

@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import "github.com/jessevdk/go-flags"
 
@@ -122,6 +122,9 @@ type SearchOption struct {
 	Follow                 bool         `short:"f" long:"follow" description:"Follow symlinks"`
 	Hidden                 bool         `long:"hidden" description:"Search hidden files and directories"`
 	SearchStream           bool         // Input from pipe. Not user option.
+	MarkdownQuery          []string     `long:"md" description:"Markdown query"`
+	HtmlQuery              []string     `long:"ht" description:"HTML query"`
+	JsonQuery              []string     `long:"jq" description:"JSON query"`
 }
 
 func (o *SearchOption) SetFilesWithRegexp(p string) {
@@ -136,17 +139,17 @@ func newSearchOption() *SearchOption {
 }
 
 func newOptionParser(opts *Option) *flags.Parser {
-	output := flags.NewNamedParser("pt", flags.Default)
+	output := flags.NewNamedParser("mack", flags.Default)
 	output.AddGroup("Output Options", "", &OutputOption{})
 
-	search := flags.NewNamedParser("pt", flags.Default)
+	search := flags.NewNamedParser("mack", flags.Default)
 	search.AddGroup("Search Options", "", &SearchOption{})
 
 	opts.OutputOption = newOutputOption()
 	opts.SearchOption = newSearchOption()
 
 	parser := flags.NewParser(opts, flags.Default)
-	parser.Name = "pt"
+	parser.Name = "mack"
 	parser.Usage = "[OPTIONS] PATTERN [PATH]"
 	return parser
 }

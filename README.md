@@ -91,7 +91,7 @@ Or, you can use Homebrew (Only macOS).
 $ brew install pt
 ```
 
-`pt` is an alias for `the_platinum_searcher` in Homebrew.
+`pt` is an alias for `mack` in Homebrew.
 
 ## Building
 

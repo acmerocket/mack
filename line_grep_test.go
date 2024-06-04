@@ -1,4 +1,4 @@
-package the_platinum_searcher
+package mack
 
 import (
 	"bytes"
@@ -37,7 +37,7 @@ files/context/context.txt:8-after
 	}
 }
 
-// Regression test of https://github.com/monochromegane/the_platinum_searcher/issues/166
+// Regression test of https://github.com/monochromegane/mack/issues/166
 func TestLineGrepBefore(t *testing.T) {
 	opts := defaultOption()
 	opts.OutputOption.Before = 1
