@@ -66,6 +66,17 @@ func (p MarkdownAck) Run(args []string) int {
 		return ExitCodeOK
 	}
 
+	// override file types based on specialized query language
+	if opts.SearchOption.HtmlQuery {
+		opts.FileTypeOption.FileType = []string{"html"}
+	}
+	if opts.SearchOption.MarkdownQuery {
+		opts.FileTypeOption.FileType = []string{"md"}
+	}
+	if opts.SearchOption.JsonQuery {
+		opts.FileTypeOption.FileType = []string{"json"}
+	}
+
 	if len(opts.FileTypeOption.FileType) > 0 {
 		// got filetype option, gather all extentions
 		extentions := uniq_exts_from_file_types(opts.FileTypeOption.FileType)
@@ -120,6 +131,14 @@ func (p MarkdownAck) Run(args []string) int {
 		opts.OutputOption.Context = 0
 	}
 
+	// html match selected
+	if opts.SearchOption.HtmlQuery {
+		// interpret PATTERN as CSS selector
+		// execute against html files
+
+	}
+
+	// normal path
 	search := search{
 		roots: p.rootsFrom(args),
 		out:   p.Out,

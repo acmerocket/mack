@@ -183,7 +183,7 @@ func uniq_exts_from_file_types(types []string) []string {
 
 	extentions := make([]string, len(ext_set))
 	i := 0
-	for key := range opts.FileTypeOption.ExtSet {
+	for key := range ext_set {
 		extentions[i] = key
 		i++
 	}
