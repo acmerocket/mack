@@ -131,18 +131,11 @@ func (p MarkdownAck) Run(args []string) int {
 		opts.OutputOption.Context = 0
 	}
 
-	// html match selected
-	if opts.SearchOption.HtmlQuery {
-		// interpret PATTERN as CSS selector
-		// execute against html files
-
-	}
-
-	// normal path
 	search := search{
 		roots: p.rootsFrom(args),
 		out:   p.Out,
 	}
+
 	if err = search.start(p.patternFrom(args)); err != nil {
 		fmt.Fprintf(p.Err, "%s\n", err)
 		return ExitCodeError

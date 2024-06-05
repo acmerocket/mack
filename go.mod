@@ -9,11 +9,17 @@ require (
 	github.com/monochromegane/go-home v0.0.0-20151024104835-25d9dda59392
 	github.com/monochromegane/terminal v0.0.0-20161222050454-9bc47e2707d9
 	github.com/shiena/ansicolor v0.0.0-20230509054315-a9deabde6e02
-	golang.org/x/text v0.15.0
+	golang.org/x/net v0.26.0
+	golang.org/x/text v0.16.0
 )
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/ericchiang/pup v0.4.0 // indirect
+	github.com/fatih/color v1.17.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

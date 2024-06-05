@@ -11,7 +11,7 @@ type search struct {
 }
 
 func (s search) start(pattern string) error {
-	grepChan := make(chan string, 5000)
+	searchChan := make(chan string, 5000)
 	done := make(chan struct{})
 
 	if opts.SearchOption.WordRegexp {
@@ -29,17 +29,13 @@ func (s search) start(pattern string) error {
 		opts.SearchOption.Regexp = true
 	}
 
-	p, err := newPattern(pattern, opts)
-	if err != nil {
-		return err
-	}
-
 	if opts.OutputOption.Context > 0 {
 		opts.OutputOption.Before = opts.OutputOption.Context
 		opts.OutputOption.After = opts.OutputOption.Context
 	}
 
 	var regFile *regexp.Regexp
+	var err error
 	if opts.SearchOption.FileSearchRegexp != "" {
 		regFile, err = regexp.Compile(opts.SearchOption.FileSearchRegexp)
 		if err != nil {
@@ -57,13 +53,19 @@ func (s search) start(pattern string) error {
 	}
 
 	go find{
-		out:  grepChan,
+		out:  searchChan,
 		opts: opts,
 	}.start(s.roots, regFile)
 
+	// original
+	p, err := newPattern(pattern, opts)
+	if err != nil {
+		return err
+	}
+
 	go newGrep(
 		p,
-		grepChan,
+		searchChan,
 		done,
 		opts,
 		newPrinter(p, s.out, opts),

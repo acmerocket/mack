@@ -64,6 +64,17 @@ func newGrepper(pattern pattern, printer printer, opts Option) grepper {
 			pattern:  pattern,
 			lineGrep: newLineGrep(printer, opts),
 		}
+	} else if opts.SearchOption.HtmlQuery {
+		return htmlSelect{
+			pattern: string(pattern.pattern),
+			printer: printer,
+		}
+	} else if opts.SearchOption.JsonQuery {
+		// FIXME
+		return extendedGrep{
+			pattern:  pattern,
+			lineGrep: newLineGrep(printer, opts),
+		}
 	} else {
 		if opts.OutputOption.Before > 0 || opts.OutputOption.After > 0 {
 			return fixedGrep{

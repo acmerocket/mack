@@ -156,7 +156,7 @@ type FileTypeOption struct {
 	//--help-types Display all known types, and how they're defined.
 	ListTypes bool `long:"help-types" description:"Display all known types, and how they're defined."`
 
-	ExtSet map[string]bool // private, to store all the interesting file name regexes.
+	// remove ExtSet map[string]bool // private, to store all the interesting file name regexes.
 }
 
 func newFileTypeOption() *FileTypeOption {
