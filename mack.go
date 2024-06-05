@@ -68,25 +68,20 @@ func (p MarkdownAck) Run(args []string) int {
 
 	if len(opts.FileTypeOption.FileType) > 0 {
 		// got filetype option, gather all extentions
-		opts.FileTypeOption.ExtSet = make(map[string]bool)
-		for _, ftype := range opts.FileTypeOption.FileType {
-			if spec, ok := known_languages[ftype]; ok {
+		extentions := uniq_exts_from_file_types(opts.FileTypeOption.FileType)
+		regex_str := regex_from_file_exts(extentions)
 
-				for _, ext := range spec.Exts {
-					opts.FileTypeOption.ExtSet[ext] = true
-				}
-			}
+		if opts.SearchOption.FileNamesOnly {
+			opts.SearchOption.EnableFilesWithRegexp = true
+			opts.SearchOption.PatternFilesWithRegexp = regex_str
+		} else {
+			opts.SearchOption.FileSearchRegexp = regex_str
 		}
+	}
 
-		builder := strings.Builder{}
-		builder.WriteString(".*\\.(")
-		for ext := range opts.FileTypeOption.ExtSet {
-			builder.WriteString(ext)
-			builder.WriteString("|")
-		}
-		regex_str := builder.String()            // convert to string
-		regex_str = regex_str[:len(regex_str)-1] // strip trailing '|'
-		regex_str += ")$"
+	if opts.FileTypeOption.KnownTypes {
+		// build a map of *all* extensions
+		regex_str := regex_from_file_exts(known_extentions)
 
 		if opts.SearchOption.FileNamesOnly {
 			opts.SearchOption.EnableFilesWithRegexp = true

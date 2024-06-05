@@ -1,5 +1,9 @@
 package mack
 
+import (
+	"strings"
+)
+
 type LanguageSpec struct {
 	Name string
 	Exts []string
@@ -148,10 +152,54 @@ var lang_specs = []LanguageSpec{
 }
 
 var known_languages = make(map[string]LanguageSpec)
+var known_extentions = make([]string, len(lang_specs))
 
 func InitFileTypes() {
 	// initialize from lang_specs
+	ext_set := make(map[string]bool)
+
 	for _, spec := range lang_specs {
 		known_languages[spec.Name] = spec
+		for _, ext := range spec.Exts {
+			ext_set[ext] = true
+		}
 	}
+	for ext := range ext_set {
+		known_extentions = append(known_extentions, ext)
+	}
+}
+
+func uniq_exts_from_file_types(types []string) []string {
+	// got file types, gather all extentions
+	ext_set := make(map[string]bool)
+
+	for _, ftype := range types {
+		if spec, ok := known_languages[ftype]; ok {
+			for _, ext := range spec.Exts {
+				ext_set[ext] = true
+			}
+		}
+	}
+
+	extentions := make([]string, len(ext_set))
+	i := 0
+	for key := range opts.FileTypeOption.ExtSet {
+		extentions[i] = key
+		i++
+	}
+
+	return extentions
+}
+
+func regex_from_file_exts(exts []string) string {
+	builder := strings.Builder{}
+	builder.WriteString(".*\\.(")
+	for _, ext := range exts {
+		builder.WriteString(ext)
+		builder.WriteString("|")
+	}
+	regex_str := builder.String()            // convert to string
+	regex_str = regex_str[:len(regex_str)-1] // strip trailing '|'
+	regex_str += ")$"                        // add the close
+	return regex_str
 }
