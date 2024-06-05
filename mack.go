@@ -28,7 +28,7 @@ type MarkdownAck struct {
 }
 
 func (p MarkdownAck) Run(args []string) int {
-
+	InitFileTypes()
 	parser := newOptionParser(&opts)
 
 	conflag.LongHyphen = true
@@ -59,7 +59,7 @@ func (p MarkdownAck) Run(args []string) int {
 	}
 
 	if opts.FileTypeOption.ListTypes {
-		for _, element := range lang_spec {
+		for _, element := range known_languages {
 			// place-holder
 			fmt.Printf("  %s: %s\n", element.Name, strings.Join(element.Exts, ", "))
 		}
@@ -70,7 +70,7 @@ func (p MarkdownAck) Run(args []string) int {
 		// got filetype option, gather all extentions
 		opts.FileTypeOption.ExtSet = make(map[string]bool)
 		for _, ftype := range opts.FileTypeOption.FileType {
-			if spec, ok := lang_spec[ftype]; ok {
+			if spec, ok := known_languages[ftype]; ok {
 
 				for _, ext := range spec.Exts {
 					opts.FileTypeOption.ExtSet[ext] = true
