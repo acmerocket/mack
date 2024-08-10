@@ -26,6 +26,8 @@ func newFormatPrinter(pattern pattern, w io.Writer, opts Option) formatPrinter {
 		return count{decorator: decorator, w: writer}
 	case opts.OutputOption.EnableGroup:
 		return group{decorator: decorator, w: writer, useNull: opts.OutputOption.Null, enableLineNumber: opts.OutputOption.EnableLineNumber}
+	case opts.OutputOption.OutputJson:
+		return json{decorator: decorator, w: writer, enableLineNumber: opts.OutputOption.EnableLineNumber}
 	default:
 		return noGroup{decorator: decorator, w: writer, enableLineNumber: opts.OutputOption.EnableLineNumber}
 	}
@@ -162,4 +164,34 @@ func newWriter(out io.Writer, opts Option) io.Writer {
 		return ansicolor.NewAnsiColorWriter(encoder)
 	}
 	return encoder
+}
+
+type json struct {
+	w                io.Writer
+	decorator        decorator
+	enableLineNumber bool
+}
+
+func (f json) print(match match) {
+	path := f.decorator.path(match.path) + SeparatorColon
+	for _, line := range match.lines {
+		sep := SeparatorColon
+		if !line.matched {
+			sep = SeparatorHyphen
+		}
+		column := ""
+		if line.matched && line.column > 0 {
+			column = f.decorator.columnNumber(line.column) + SeparatorColon
+		}
+		lineNum := ""
+		if f.enableLineNumber {
+			lineNum = f.decorator.lineNumber(line.num) + sep
+		}
+		fmt.Fprintln(f.w,
+			path+
+				lineNum+
+				column+
+				f.decorator.match(line.text, line.matched),
+		)
+	}
 }

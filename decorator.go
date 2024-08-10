@@ -28,7 +28,7 @@ func newDecorator(pattern pattern, option Option) decorator {
 	}
 }
 
-type color struct {
+type term_color struct {
 	from   string
 	to     string
 	regexp *regexp.Regexp
@@ -38,8 +38,8 @@ type color struct {
 	colorMatch      string
 }
 
-func newColor(pattern pattern, option Option) color {
-	color := color{
+func newColor(pattern pattern, option Option) term_color {
+	color := term_color{
 		colorLineNumber: ansiEscape(option.OutputOption.ColorCodeLineNumber),
 		colorPath:       ansiEscape(option.OutputOption.ColorCodePath),
 		colorMatch:      ansiEscape(option.OutputOption.ColorCodeMatch),
@@ -64,19 +64,19 @@ func ansiEscape(code string) string {
 	return "\x1b[" + sanitized + "m"
 }
 
-func (c color) path(path string) string {
+func (c term_color) path(path string) string {
 	return c.colorPath + path + ColorReset
 }
 
-func (c color) lineNumber(lineNum int) string {
+func (c term_color) lineNumber(lineNum int) string {
 	return c.colorLineNumber + strconv.Itoa(lineNum) + ColorReset
 }
 
-func (c color) columnNumber(columnNum int) string {
+func (c term_color) columnNumber(columnNum int) string {
 	return strconv.Itoa(columnNum)
 }
 
-func (c color) match(line string, matched bool) string {
+func (c term_color) match(line string, matched bool) string {
 	if !matched {
 		return line
 	} else if c.regexp == nil {
