@@ -173,6 +173,7 @@ type json struct {
 }
 
 func (f json) print(match match) {
+	// #FIXME This needs to provide json output
 	path := f.decorator.path(match.path) + SeparatorColon
 	for _, line := range match.lines {
 		sep := SeparatorColon

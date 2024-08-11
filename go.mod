@@ -3,6 +3,8 @@ module github.com/acmerocket/mack
 go 1.22.3
 
 require (
+	github.com/andybalholm/cascadia v1.3.2
+	github.com/fatih/color v1.17.0
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/monochromegane/conflag v0.0.0-20151130130520-6d68c9aa4183
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00
@@ -15,9 +17,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/andybalholm/cascadia v1.3.2 // indirect
-	github.com/ericchiang/pup v0.4.0 // indirect
-	github.com/fatih/color v1.17.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	golang.org/x/sys v0.21.0 // indirect
