@@ -5,6 +5,7 @@ go 1.22.3
 require (
 	github.com/andybalholm/cascadia v1.3.2
 	github.com/fatih/color v1.17.0
+	github.com/gomarkdown/markdown v0.0.0-20240730141124-034f12af3bf6
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/monochromegane/conflag v0.0.0-20151130130520-6d68c9aa4183
 	github.com/monochromegane/go-gitignore v0.0.0-20200626010858-205db1a8cc00

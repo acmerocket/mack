@@ -69,6 +69,11 @@ func newGrepper(pattern pattern, printer printer, opts Option) grepper {
 			pattern: string(pattern.pattern),
 			printer: printer,
 		}
+	} else if opts.SearchOption.MarkdownQuery {
+		return markdownSelect{
+			pattern: string(pattern.pattern),
+			printer: printer,
+		}
 	} else if opts.SearchOption.JsonQuery {
 		// FIXME
 		return extendedGrep{

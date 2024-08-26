@@ -58,11 +58,13 @@ func (s search) start(pattern string) error {
 	}.start(s.roots, regFile)
 
 	// original
+	// constructs a "pattern" with a regular expression for matching
 	p, err := newPattern(pattern, opts)
 	if err != nil {
 		return err
 	}
 
+	// performs the match, with pattern p
 	go newGrep(
 		p,
 		searchChan,
