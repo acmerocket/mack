@@ -12,36 +12,54 @@ import (
 	"golang.org/x/net/html"
 )
 
-type markdownSelect struct {
+type cssSelect struct {
 	pattern cascadia.Sel // CSS select pattern for cascadia
 	printer printer
 }
 
-func NewMarkdownSelect(pattern pattern, printer printer) markdownSelect {
+func NewCssSelect(pattern pattern, printer printer) cssSelect {
 	// parse the pattnern
 	sel, err := cascadia.Parse(string(pattern.pattern))
 	if err != nil {
 		log.Fatalf("invalid pattern '%s': %s\n", string(pattern.pattern), err)
 	}
-	return markdownSelect{
+	return cssSelect{
 		pattern: sel,
 		printer: printer,
 	}
 }
 
-func (g markdownSelect) grep(path string, buf []byte) {
-	// parse the new doc
-	html_doc, err := loadMarkdownFile(path)
-	if err != nil {
-		log.Fatalf("error parsing file '%s': %s\n", path, err)
-	}
+func (g cssSelect) grep(path string, buf []byte) {
+	//var doc *html.Node = nil
+	if hasExtension(path, "markdown") {
+		// parse the new doc
+		doc, err := loadMarkdownFile(path)
+		if err != nil {
+			log.Fatalf("error parsing file '%s': %s\n", path, err)
+		}
 
-	match := match{path: path}
-	for _, p := range cascadia.QueryAll(html_doc, g.pattern) {
-		// TODO is there any way to get line and col #?
-		match.add(0, 0, nodeStr(p), true)
+		match := match{path: path}
+		for _, p := range cascadia.QueryAll(doc, g.pattern) {
+			// TODO is there any way to get line and col #?
+			match.add(0, 0, nodeStr(p), true)
+		}
+		g.printer.print(match)
+	} else if hasExtension(path, "html") {
+		// parse the new doc
+		doc, err := loadHtmlFile(path)
+		if err != nil {
+			log.Fatalf("error parsing file '%s': %s\n", path, err)
+		}
+
+		match := match{path: path}
+		for _, p := range cascadia.QueryAll(doc, g.pattern) {
+			// TODO is there any way to get line and col #?
+			match.add(0, 0, nodeStr(p), true)
+		}
+		g.printer.print(match)
+	} else {
+		log.Println("Unknown file type: ", path)
 	}
-	g.printer.print(match)
 }
 
 func loadMarkdownFile(path string) (*html.Node, error) {
@@ -71,6 +89,8 @@ func loadMarkdownFile(path string) (*html.Node, error) {
 	return html.Parse(bytes.NewReader(html_bytes))
 }
 
+// TODO - move to html package?
+// what is area for "extracting text?" default css results?
 func nodeStr(node *html.Node) string {
 	var buf bytes.Buffer
 	collectText(node, &buf)
