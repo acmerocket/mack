@@ -93,7 +93,12 @@ func loadMarkdownFile(path string) (*html.Node, error) {
 // what is area for "extracting text?" default css results?
 func nodeStr(node *html.Node) string {
 	var buf bytes.Buffer
-	collectText(node, &buf)
+	//collectText(node, &buf)
+	err := html.Render(&buf, node)
+	if err != nil {
+		log.Fatal("Error rendering ", node.Data, err)
+	}
+
 	return buf.String()
 }
 
