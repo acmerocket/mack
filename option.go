@@ -127,9 +127,10 @@ type SearchOption struct {
 	Follow                 bool         `long:"follow" description:"Follow symlinks"`
 	Hidden                 bool         `long:"hidden" description:"Search hidden files and directories"`
 	SearchStream           bool         // Input from pipe. Not user option.
-	MarkdownQuery          bool         `long:"md" description:"Parse PATTERN as a Markdown query against MD files"`
-	HtmlQuery              bool         `long:"html" description:"Parse PATTERN as a CSS selections against HTML files"`
-	JsonQuery              bool         `long:"jq" description:"Parse PATTERN as a JSON query against JSON files"`
+	CssSelect              bool         `long:"css" description:"Parse PATTERN as a CSS selection against HTML and Markdown files"`
+	XpathQuery             bool         `long:"xpath" description:"Parse PATTERN as an Xpath expression"`
+	//HtmlQuery              bool         `long:"html" description:"Parse PATTERN as a CSS selections against HTML files"`
+	//JsonQuery              bool         `long:"jq" description:"Parse PATTERN as a JSON query against JSON files"`
 }
 
 func (o *SearchOption) SetFilesWithRegexp(p string) {

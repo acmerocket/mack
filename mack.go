@@ -67,15 +67,18 @@ func (p MarkdownAck) Run(args []string) int {
 	}
 
 	// override file types based on specialized query language
-	if opts.SearchOption.HtmlQuery {
-		opts.FileTypeOption.FileType = []string{"html"}
+	//if opts.SearchOption.HtmlQuery {
+	//	opts.FileTypeOption.FileType = []string{"html"}
+	//}
+	if opts.SearchOption.CssSelect && opts.FileTypeOption.FileType == nil {
+		opts.FileTypeOption.FileType = []string{"markdown", "html"}
 	}
-	if opts.SearchOption.MarkdownQuery {
-		opts.FileTypeOption.FileType = []string{"md"}
+	if opts.SearchOption.XpathQuery && opts.FileTypeOption.FileType == nil {
+		opts.FileTypeOption.FileType = []string{"markdown", "html", "xml"}
 	}
-	if opts.SearchOption.JsonQuery {
-		opts.FileTypeOption.FileType = []string{"json"}
-	}
+	//if opts.SearchOption.JsonQuery {
+	//	opts.FileTypeOption.FileType = []string{"json"}
+	//}
 
 	if len(opts.FileTypeOption.FileType) > 0 {
 		// got filetype option, gather all extentions

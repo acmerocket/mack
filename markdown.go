@@ -13,18 +13,45 @@ import (
 )
 
 type markdownSelect struct {
-	pattern string // CSS select pattern for cascadia
+	pattern cascadia.Sel // CSS select pattern for cascadia
 	printer printer
 }
 
+func NewMarkdownSelect(pattern pattern, printer printer) markdownSelect {
+	// parse the pattnern
+	sel, err := cascadia.Parse(string(pattern.pattern))
+	if err != nil {
+		log.Fatalf("invalid pattern '%s': %s\n", string(pattern.pattern), err)
+	}
+	return markdownSelect{
+		pattern: sel,
+		printer: printer,
+	}
+}
+
 func (g markdownSelect) grep(path string, buf []byte) {
+	// parse the new doc
+	html_doc, err := loadMarkdownFile(path)
+	if err != nil {
+		log.Fatalf("error parsing file '%s': %s\n", path, err)
+	}
+
+	match := match{path: path}
+	for _, p := range cascadia.QueryAll(html_doc, g.pattern) {
+		// TODO is there any way to get line and col #?
+		match.add(0, 0, nodeStr(p), true)
+	}
+	g.printer.print(match)
+}
+
+func loadMarkdownFile(path string) (*html.Node, error) {
 	f, err := getFileHandler(path)
 	if err != nil {
 		log.Fatalf("open: %s\n", err)
 	}
 	defer f.Close()
 
-	// TODO Use the provided buffer?
+	// TODO Use the provided buffer in grep?
 	file_buf, err := io.ReadAll(f)
 	if err != nil {
 		log.Fatalf("error reading file '%s': %s\n", newOutputOption().ColorCodePath, err)
@@ -41,27 +68,10 @@ func (g markdownSelect) grep(path string, buf []byte) {
 	html_bytes := markdown.Render(doc, renderer)
 
 	// parse the new html doc
-	html_doc, err := html.Parse(bytes.NewReader(html_bytes))
-	if err != nil {
-		log.Fatalf("error parsing html '%s': %s\n", html_bytes, err)
-	}
-
-	// apply cascadia to the doc
-	// TODO parse pattern at create, should be shared whole run.
-	sel, err := cascadia.Parse(g.pattern)
-	if err != nil {
-		log.Fatalf("invalid pattern '%s': %s\n", g.pattern, err)
-	}
-
-	match := match{path: path}
-	for _, p := range cascadia.QueryAll(html_doc, sel) {
-		// TODO is there any way to get line and col #?
-		match.add(0, 0, g.nodeStr(p), true)
-	}
-	g.printer.print(match)
+	return html.Parse(bytes.NewReader(html_bytes))
 }
 
-func (g markdownSelect) nodeStr(node *html.Node) string {
+func nodeStr(node *html.Node) string {
 	var buf bytes.Buffer
 	collectText(node, &buf)
 	return buf.String()
