@@ -1,6 +1,7 @@
 package mack
 
 import (
+	"path/filepath"
 	"strings"
 )
 
@@ -202,4 +203,22 @@ func regex_from_file_exts(exts []string) string {
 	regex_str = regex_str[:len(regex_str)-1] // strip trailing '|'
 	regex_str += ")$"                        // add the close
 	return regex_str
+}
+
+func GetLanguageSpec(path string) (LanguageSpec, bool) {
+	ext := strings.Trim(filepath.Ext(path), ".")
+	spec, ok := known_languages[ext]
+	if ok {
+		return spec, true
+	} else {
+		// search all (for now, TODO later build index)
+		for _, search := range lang_specs {
+			for _, search_ext := range search.Exts {
+				if search_ext == ext {
+					return search, true
+				}
+			}
+		}
+		return LanguageSpec{}, false
+	}
 }

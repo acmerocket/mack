@@ -3,6 +3,7 @@ package mack
 import (
 	"bufio"
 	"log"
+	"path/filepath"
 	"strings"
 
 	"github.com/antchfx/htmlquery"
@@ -29,39 +30,47 @@ func NewXpathQuery(pattern pattern, printer printer) xpathSelect {
 }
 
 func (g xpathSelect) grep(path string, buf []byte) {
-	if hasExtension(path, "html") {
-		doc, err := loadHtmlFile(path)
-		if err != nil {
-			log.Fatalf("Unable to load file: %s, %s\n", path, err)
+	fileSpec, ok := GetLanguageSpec(path)
+	if ok {
+		switch fileSpec.Name {
+		case "html":
+			doc, err := loadHtmlFile(path)
+			if err != nil {
+				log.Fatalf("Unable to load file: %s, %s\n", path, err)
+			}
+			list, err := htmlquery.QueryAll(doc, g.pattern)
+			//log.Println("query:", g.pattern, list, nodeStr(doc))
+			if err != nil {
+				log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
+			}
+			g.printHtmlNode(path, list)
+		case "markdown":
+		case "md":
+			doc, err := loadMarkdownFile(path)
+			if err != nil {
+				log.Fatalf("Unable to load file: %s, %s\n", path, err)
+			}
+			list, err := htmlquery.QueryAll(doc, g.pattern)
+			//log.Println("query:", g.pattern, list, nodeStr(doc))
+			if err != nil {
+				log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
+			}
+			g.printHtmlNode(path, list)
+		case "xml":
+			doc, err := loadXmlFile(path)
+			if err != nil {
+				log.Fatalf("error parsing file '%s': %s\n", path, err)
+			}
+			list, err := xmlquery.QueryAll(doc, g.pattern)
+			if err != nil {
+				log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
+			}
+			g.printXmlNode(path, list)
+		default:
+			log.Println("unknown file extention, skipping: ", filepath.Ext(path), " ", path)
 		}
-		list, err := htmlquery.QueryAll(doc, g.pattern)
-		if err != nil {
-			log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
-		}
-		g.printHtmlNode(path, list)
-	} else if hasExtension(path, "markdown") {
-		// parse the new html doc
-		doc, err := loadMarkdownFile(path)
-		if err != nil {
-			log.Fatalf("error parsing file '%s': %s\n", path, err)
-		}
-		list, err := htmlquery.QueryAll(doc, g.pattern)
-		if err != nil {
-			log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
-		}
-		g.printHtmlNode(path, list)
-	} else if hasExtension(path, "xml") {
-		doc, err := loadXmlFile(path)
-		if err != nil {
-			log.Fatalf("error parsing file '%s': %s\n", path, err)
-		}
-		list, err := xmlquery.QueryAll(doc, g.pattern)
-		if err != nil {
-			log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
-		}
-		g.printXmlNode(path, list)
 	} else {
-		log.Fatal("unknown file type: ", path)
+		log.Fatalf("Unknow file type %s\n", path)
 	}
 }
 

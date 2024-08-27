@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"log"
+	"path/filepath"
 
 	"github.com/andybalholm/cascadia"
 	"github.com/gomarkdown/markdown"
@@ -30,36 +31,39 @@ func NewCssSelect(pattern pattern, printer printer) cssSelect {
 }
 
 func (g cssSelect) grep(path string, buf []byte) {
-	//var doc *html.Node = nil
-	if hasExtension(path, "markdown") {
-		// parse the new doc
-		doc, err := loadMarkdownFile(path)
-		if err != nil {
-			log.Fatalf("error parsing file '%s': %s\n", path, err)
+	fileSpec, ok := GetLanguageSpec(path)
+	if ok {
+		switch fileSpec.Name {
+		case "html":
+			doc, err := loadHtmlFile(path)
+			if err != nil {
+				log.Fatalf("Unable to load file: %s, %s\n", path, err)
+			}
+			list := cascadia.QueryAll(doc, g.pattern)
+			g.printHtmlNode(path, list)
+		case "markdown":
+		case "md":
+			doc, err := loadMarkdownFile(path)
+			if err != nil {
+				log.Fatalf("Unable to load file: %s, %s\n", path, err)
+			}
+			list := cascadia.QueryAll(doc, g.pattern)
+			g.printHtmlNode(path, list)
+		default:
+			log.Println("unknown file extention, skipping: ", filepath.Ext(path), " ", path)
 		}
-
-		match := match{path: path}
-		for _, p := range cascadia.QueryAll(doc, g.pattern) {
-			// TODO is there any way to get line and col #?
-			match.add(0, 0, nodeStr(p), true)
-		}
-		g.printer.print(match)
-	} else if hasExtension(path, "html") {
-		// parse the new doc
-		doc, err := loadHtmlFile(path)
-		if err != nil {
-			log.Fatalf("error parsing file '%s': %s\n", path, err)
-		}
-
-		match := match{path: path}
-		for _, p := range cascadia.QueryAll(doc, g.pattern) {
-			// TODO is there any way to get line and col #?
-			match.add(0, 0, nodeStr(p), true)
-		}
-		g.printer.print(match)
 	} else {
-		log.Println("Unknown file type: ", path)
+		log.Fatalf("Unknow file type %s\n", path)
 	}
+}
+
+func (g cssSelect) printHtmlNode(path string, list []*html.Node) {
+	match := match{path: path}
+	for _, p := range list {
+		// TODO is there any way to get line and col #?
+		match.add(0, 0, nodeStr(p), true)
+	}
+	g.printer.print(match)
 }
 
 func loadMarkdownFile(path string) (*html.Node, error) {
