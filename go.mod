@@ -18,8 +18,8 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/antchfx/htmlquery v1.3.2 // indirect
-	github.com/antchfx/xmlquery v1.4.1 // indirect
+	github.com/antchfx/htmlquery v1.3.2
+	github.com/antchfx/xmlquery v1.4.1
 	github.com/antchfx/xpath v1.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

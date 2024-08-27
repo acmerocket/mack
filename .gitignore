@@ -5,3 +5,4 @@ pt
 Godeps/_workspace/
 main
 .vscode/
+.DS_Store

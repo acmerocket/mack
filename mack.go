@@ -111,7 +111,7 @@ func (p MarkdownAck) Run(args []string) int {
 		return ExitCodeError
 	}
 
-	if !terminal.IsTerminal(os.Stdout) {
+	if !terminal.IsTerminal(os.Stdout) || opts.OutputOption.OutputJson {
 		if !opts.OutputOption.ForceColor {
 			opts.OutputOption.EnableColor = false
 		}

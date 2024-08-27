@@ -1,6 +1,7 @@
 package mack
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -24,10 +25,11 @@ func newFormatPrinter(pattern pattern, w io.Writer, opts Option) formatPrinter {
 		return fileWithMatch{decorator: decorator, w: writer, useNull: opts.OutputOption.Null}
 	case opts.OutputOption.Count:
 		return count{decorator: decorator, w: writer}
+	case opts.OutputOption.OutputJson:
+		// FIXME indent/prefix should JSON-related options
+		return NewJsonPrinter(w, opts.OutputOption)
 	case opts.OutputOption.EnableGroup:
 		return group{decorator: decorator, w: writer, useNull: opts.OutputOption.Null, enableLineNumber: opts.OutputOption.EnableLineNumber}
-	case opts.OutputOption.OutputJson:
-		return json{decorator: decorator, w: writer, enableLineNumber: opts.OutputOption.EnableLineNumber}
 	default:
 		return noGroup{decorator: decorator, w: writer, enableLineNumber: opts.OutputOption.EnableLineNumber}
 	}
@@ -166,33 +168,46 @@ func newWriter(out io.Writer, opts Option) io.Writer {
 	return encoder
 }
 
-type json struct {
+type json_printer struct {
+	encoder          *json.Encoder
 	w                io.Writer
-	decorator        decorator
 	enableLineNumber bool
 }
 
-func (f json) print(match match) {
-	// #FIXME This needs to provide json output
-	path := f.decorator.path(match.path) + SeparatorColon
+func NewJsonPrinter(w io.Writer, opts *OutputOption) json_printer {
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "") // FIXME opts.JsonPrefix, opts.JsonIndent
+	enc.SetEscapeHTML(false)
+	return json_printer{encoder: enc, w: w, enableLineNumber: opts.EnableLineNumber}
+}
+
+func (f json_printer) print(match match) {
 	for _, line := range match.lines {
-		sep := SeparatorColon
-		if !line.matched {
-			sep = SeparatorHyphen
-		}
-		column := ""
-		if line.matched && line.column > 0 {
-			column = f.decorator.columnNumber(line.column) + SeparatorColon
-		}
-		lineNum := ""
 		if f.enableLineNumber {
-			lineNum = f.decorator.lineNumber(line.num) + sep
+			// wrap the match in a json struct that includes
+			// match.path,
+
+			data := map[string]interface{}{
+				"path":    match.path,
+				"text":    line.text,
+				"matched": line.matched,
+			}
+			if line.num > 0 {
+				data["line"] = line.num
+			}
+			if line.column > 0 {
+				data["column"] = line.column
+			}
+			if err := f.encoder.Encode(data); err != nil {
+				// invalid json, assume raw string and just print it, in quotes
+				fmt.Fprintln(f.w, data)
+			}
+		} else if line.matched {
+			if err := f.encoder.Encode(line.text); err != nil {
+				// invalid json, assume raw string and just print it, in quotes
+				fmt.Fprintln(f.w, line.text)
+			}
 		}
-		fmt.Fprintln(f.w,
-			path+
-				lineNum+
-				column+
-				f.decorator.match(line.text, line.matched),
-		)
+		// line didn't match
 	}
 }

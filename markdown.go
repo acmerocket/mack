@@ -102,11 +102,11 @@ func nodeStr(node *html.Node) string {
 	return buf.String()
 }
 
-func collectText(n *html.Node, buf *bytes.Buffer) {
-	if n.Type == html.TextNode {
-		buf.WriteString(n.Data)
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		collectText(c, buf)
-	}
-}
+// func collectText(n *html.Node, buf *bytes.Buffer) {
+// 	if n.Type == html.TextNode {
+// 		buf.WriteString(n.Data)
+// 	}
+// 	for c := n.FirstChild; c != nil; c = c.NextSibling {
+// 		collectText(c, buf)
+// 	}
+// }
