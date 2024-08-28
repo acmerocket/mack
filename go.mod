@@ -4,7 +4,6 @@ go 1.22.3
 
 require (
 	github.com/andybalholm/cascadia v1.3.2
-	github.com/fatih/color v1.17.0
 	github.com/gomarkdown/markdown v0.0.0-20240730141124-034f12af3bf6
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/monochromegane/conflag v0.0.0-20151130130520-6d68c9aa4183
@@ -19,7 +18,7 @@ require (
 require github.com/antchfx/jsonquery v1.3.5
 
 require (
-	github.com/itchyny/gojq v0.12.16 // indirect
+	github.com/itchyny/gojq v0.12.16
 	github.com/itchyny/timefmt-go v0.1.6 // indirect
 )
 
@@ -29,8 +28,6 @@ require (
 	github.com/antchfx/xmlquery v1.4.1
 	github.com/antchfx/xpath v1.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"log"
 	"path/filepath"
-	"strings"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/antchfx/jsonquery"
@@ -138,14 +137,14 @@ func (g xpathSelect) loadJsonFile(path string) (*jsonquery.Node, error) {
 	return jsonquery.Parse(bufio.NewReader(f))
 }
 
-func hasExtension(path, type_str string) bool {
-	// based on ext (as file type)
-	type_rec := known_languages[type_str]
-	for _, ext := range type_rec.Exts {
-		if strings.HasSuffix(path, "."+ext) {
-			return true
-		}
+// func hasExtension(path, type_str string) bool {
+// 	// based on ext (as file type)
+// 	type_rec := known_languages[type_str]
+// 	for _, ext := range type_rec.Exts {
+// 		if strings.HasSuffix(path, "."+ext) {
+// 			return true
+// 		}
 
-	}
-	return false
-}
+// 	}
+// 	return false
+// }
