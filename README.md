@@ -1,10 +1,77 @@
 # mack
 
-ack-for-markdown. An extension of platinmun seacher to add markdown structure awareness.
+mack (working title) - `ack` with markdown support
 
-A code search tool similar to `ack` and `the_silver_searcher(ag)`. It supports multi platforms and multi encodings.
+**`tl;dr find + grep + xpath + jq + css`**
+
+`mack` provides a simple CLI for a three-stage parallel process to:
+1. Select files from the file system, based on name or type
+2. Query those files with regex, xpath, css or jq
+3. Format those results: text, color-terminal, json
+
 
 ## Features
+
+### File Selection
+List files (without searching) with `-f`. By default, `mack` searches recursively starting at the current directory.
+```
+mack -f # FIXME - not working
+mack -f some/path # FIXME
+```
+
+Select file by type with `-t`. `-l` to *list* files instead of applying the query:
+```
+mack -t markdown -l "##"
+```
+
+Limit file types based on all known file types with `-k` or `--known-types`. `-e` specifies a REGEX.
+```
+mack --known-types -e "^# "
+```
+
+To list all know file types:
+```
+mack --help-types
+```
+
+### Regex Matching
+When not limited by `-t` or `-k`, `mack` will default to matching all files recursively. By default, `mack` uses a simple grep-like marching algorithm.
+```
+mack "##"
+```
+
+Using `-e` (same as the original `grep`):
+```
+mack -e "^# "
+```
+
+REGEX chect sheet: https://quickref.me/regex.html
+
+### XPath
+Search for `<table>`s in HTML and XML files.
+```
+mack --xpath //table
+```
+
+XPath cheat cheet: https://quickref.me/xpath
+
+### CSS Selector
+Match all the `<h2>` tags in HTML files:
+```
+mack -t html --css h2
+```
+
+CSS Selector cheat sheet: https://quickref.me/css3#css-selectors
+
+### Json Query
+Match `description` fields in JSON files:
+```
+mack -t json --jq .description
+```
+
+jq cheat sheet: https://www.devtoolsdaily.com/cheatsheets/jq/
+
+### Speed
 
 - It searches code about 3–5× faster than `ack`.
 - It searches code as fast as `the_silver_searcher(ag)`.
@@ -13,7 +80,7 @@ A code search tool similar to `ack` and `the_silver_searcher(ag)`. It supports m
 - It searches `UTF-8`, `EUC-JP` and `Shift_JIS` files.
 - It provides binaries for multi platform (macOS, Windows, Linux).
 
-### Benchmarks
+#### Benchmarks
 
 ```sh
 cd ~/src/github.com/torvalds/linux
@@ -23,13 +90,118 @@ pt  EXPORT_SYMBOL_GPL  2.29s user 1.26s system 358% cpu  0.991 total # pt: It's 
 ```
 
 ## Usage
+```
+Usage:
+  mack [OPTIONS] PATTERN [PATH]
 
-```sh
-$ # Recursively searches for PATTERN in current directory.
-$ pt PATTERN
+Application Options:
+      --version             Show version
 
-$ # You can specify PATH and some OPTIONS.
-$ pt OPTIONS PATTERN PATH
+Output Options:
+      --color               Print color codes in results (default: true)
+      --nocolor             Don't print color codes in results (default: false)
+      --color-line-number=  Color codes for line numbers (default: 1;33)
+      --color-path=         Color codes for path names (default: 1;32)
+      --color-match=        Color codes for result matches (default: 30;43)
+      --group               Print file name at header (default: true)
+      --nogroup             Don't print file name at header (default: false)
+  -0, --null                Separate filenames with null (for 'xargs -0') (default: false)
+      --column              Print column (default: false)
+      --numbers             Print Line number. (default: true)
+  -N, --nonumbers           Omit Line number. (default: false)
+  -A, --after=              Print lines after match
+  -B, --before=             Print lines before match
+  -C, --context=            Print lines before and after match
+  -l, --files-with-matches  Only print filenames that contain matches
+  -c, --count               Only print the number of matching lines for each input file.
+  -o, --output-encode=      Specify output encoding (none, jis, sjis, euc)
+      --json                Output results as JSON
+      --indent=             Indent for JSON ouput
+
+Search Options:
+  -e                        Parse PATTERN as a regular expression (default: false). Accepted syntax is the same as
+                            https://github.com/google/re2/wiki/Syntax except from \C
+  -i, --ignore-case         Match case insensitively
+  -S, --smart-case          Match case insensitively unless PATTERN contains uppercase characters
+  -w, --word-regexp         Only match whole words
+      --ignore=             Ignore files/directories matching pattern
+      --vcs-ignore=         VCS ignore files (default: .gitignore)
+      --global-gitignore    Use git's global gitignore file for ignore patterns
+      --home-ptignore       Use $Home/.ptignore file for ignore patterns
+  -U, --skip-vcs-ignores    Don't use VCS ignore file for ignore patterns
+  -f                        Only print the files selected, without searching. The PATTERN must not be specified.
+  -g=                       Print filenames matching PATTERN
+  -G, --file-search-regexp= PATTERN Limit search to filenames matching PATTERN
+      --depth=              Search up to NUM directories deep (default: 25)
+      --follow              Follow symlinks
+      --hidden              Search hidden files and directories
+      --css                 Parse PATTERN as a CSS selection against HTML and Markdown files
+      --xpath               Parse PATTERN as an Xpath expression
+      --jq                  Parse PATTERN as a JSON query against JSON files
+
+File Type Options:
+  -t, --type=               Include only X files, where X is a filetype, e.g. python, html, markdown, etc
+  -k, --known-types         Include only files of types that mack recognizes.
+      --help-types          Display all known types, and how they're defined.
+
+Help Options:
+  -h, --help                Show this help message
+
+ERROR Usage:
+  mack [OPTIONS] PATTERN [PATH]
+
+Application Options:
+      --version             Show version
+
+Output Options:
+      --color               Print color codes in results (default: true)
+      --nocolor             Don't print color codes in results (default: false)
+      --color-line-number=  Color codes for line numbers (default: 1;33)
+      --color-path=         Color codes for path names (default: 1;32)
+      --color-match=        Color codes for result matches (default: 30;43)
+      --group               Print file name at header (default: true)
+      --nogroup             Don't print file name at header (default: false)
+  -0, --null                Separate filenames with null (for 'xargs -0') (default: false)
+      --column              Print column (default: false)
+      --numbers             Print Line number. (default: true)
+  -N, --nonumbers           Omit Line number. (default: false)
+  -A, --after=              Print lines after match
+  -B, --before=             Print lines before match
+  -C, --context=            Print lines before and after match
+  -l, --files-with-matches  Only print filenames that contain matches
+  -c, --count               Only print the number of matching lines for each input file.
+  -o, --output-encode=      Specify output encoding (none, jis, sjis, euc)
+      --json                Output results as JSON
+      --indent=             Indent for JSON ouput
+
+Search Options:
+  -e                        Parse PATTERN as a regular expression (default: false). Accepted syntax is the same as
+                            https://github.com/google/re2/wiki/Syntax except from \C
+  -i, --ignore-case         Match case insensitively
+  -S, --smart-case          Match case insensitively unless PATTERN contains uppercase characters
+  -w, --word-regexp         Only match whole words
+      --ignore=             Ignore files/directories matching pattern
+      --vcs-ignore=         VCS ignore files (default: .gitignore)
+      --global-gitignore    Use git's global gitignore file for ignore patterns
+      --home-ptignore       Use $Home/.ptignore file for ignore patterns
+  -U, --skip-vcs-ignores    Don't use VCS ignore file for ignore patterns
+  -f                        Only print the files selected, without searching. The PATTERN must not be specified.
+  -g=                       Print filenames matching PATTERN
+  -G, --file-search-regexp= PATTERN Limit search to filenames matching PATTERN
+      --depth=              Search up to NUM directories deep (default: 25)
+      --follow              Follow symlinks
+      --hidden              Search hidden files and directories
+      --css                 Parse PATTERN as a CSS selection against HTML and Markdown files
+      --xpath               Parse PATTERN as an Xpath expression
+      --jq                  Parse PATTERN as a JSON query against JSON files
+
+File Type Options:
+  -t, --type=               Include only X files, where X is a filetype, e.g. python, html, markdown, etc
+  -k, --known-types         Include only files of types that mack recognizes.
+      --help-types          Display all known types, and how they're defined.
+
+Help Options:
+  -h, --help                Show this help message
 ```
 
 ## Configuration
