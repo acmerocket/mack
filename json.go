@@ -104,7 +104,7 @@ type json_printer struct {
 
 func NewJsonPrinter(w io.Writer, opts *OutputOption) json_printer {
 	enc := json.NewEncoder(w)
-	enc.SetIndent("", "") // FIXME opts.JsonPrefix, opts.JsonIndent
+	enc.SetIndent("", opts.JsonIndent)
 	enc.SetEscapeHTML(false)
 	return json_printer{encoder: enc, w: w, enableLineNumber: opts.EnableLineNumber}
 }

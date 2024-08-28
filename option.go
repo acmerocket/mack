@@ -40,7 +40,8 @@ type OutputOption struct {
 	FilesWithMatches    bool         `short:"l" long:"files-with-matches" description:"Only print filenames that contain matches"`
 	Count               bool         `short:"c" long:"count" description:"Only print the number of matching lines for each input file."`
 	OutputEncode        string       `short:"o" long:"output-encode" description:"Specify output encoding (none, jis, sjis, euc)"`
-	OutputJson          bool         `long:"json" description:"Output results as valid JSON"`
+	OutputJson          bool         `long:"json" description:"Output results as JSON"`
+	JsonIndent          string       `long:"indent" description:"Indent for JSON ouput"`
 }
 
 func newOutputOption() *OutputOption {
@@ -129,8 +130,7 @@ type SearchOption struct {
 	SearchStream           bool         // Input from pipe. Not user option.
 	CssSelect              bool         `long:"css" description:"Parse PATTERN as a CSS selection against HTML and Markdown files"`
 	XpathQuery             bool         `long:"xpath" description:"Parse PATTERN as an Xpath expression"`
-	//HtmlQuery              bool         `long:"html" description:"Parse PATTERN as a CSS selections against HTML files"`
-	JsonQuery bool `long:"jq" description:"Parse PATTERN as a JSON query against JSON files"`
+	JsonQuery              bool         `long:"jq" description:"Parse PATTERN as a JSON query against JSON files"`
 }
 
 func (o *SearchOption) SetFilesWithRegexp(p string) {

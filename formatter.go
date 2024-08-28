@@ -28,7 +28,6 @@ func newFormatPrinter(pattern pattern, w io.Writer, opts Option) formatPrinter {
 	case opts.OutputOption.Count:
 		return count{decorator: decorator, w: writer}
 	case opts.OutputOption.OutputJson:
-		// FIXME indent/prefix should JSON-related options
 		return NewJsonPrinter(w, opts.OutputOption)
 	case opts.OutputOption.EnableGroup:
 		return group{decorator: decorator, w: writer, useNull: opts.OutputOption.Null, enableLineNumber: opts.OutputOption.EnableLineNumber}
