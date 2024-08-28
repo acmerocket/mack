@@ -45,7 +45,7 @@ Using `-e` (same as the original `grep`):
 mack -e "^# "
 ```
 
-REGEX chect sheet: https://quickref.me/regex.html
+REGEX chect sheet: https://devhints.io/regexp, https://quickref.me/regex.html
 
 ### XPath
 Search for `<table>`s in HTML and XML files.
@@ -53,7 +53,7 @@ Search for `<table>`s in HTML and XML files.
 mack --xpath //table
 ```
 
-XPath cheat cheet: https://quickref.me/xpath
+XPath cheat cheet: https://devhints.io/xpath, https://quickref.me/xpath
 
 ### CSS Selector
 Match all the `<h2>` tags in HTML files:
@@ -61,7 +61,7 @@ Match all the `<h2>` tags in HTML files:
 mack -t html --css h2
 ```
 
-CSS Selector cheat sheet: https://quickref.me/css3#css-selectors
+CSS Selector cheat sheet: https://devhints.io/css, https://quickref.me/css3#css-selectors
 
 ### Json Query
 Match `description` fields in JSON files:

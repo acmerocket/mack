@@ -11,7 +11,7 @@ install:
 
 clean:
 	go clean -v ./...
-	rm .cover.html .cover.out
+	rm -f .cover.html .cover.out
 
 cover:
 	go test -v -coverprofile .cover.out ./...
