@@ -127,14 +127,21 @@ func (f group) render_line(line any) string {
 	case string:
 		return v
 	case *jsonquery.Node:
-		str, err := RenderJson(v.Value())
+		str, err := RenderJson(v.Value(), "") // fixme: drop options into group struct
 		if err != nil {
 			log.Printf("error rendering %v: %s", v, err)
 			str = fmt.Sprintf("%v", v)
 		}
 		return str
 	case *html.Node:
-		return nodeStr(v)
+		return RenderHtml(v)
+	case map[string]interface{}:
+		str, err := RenderJson(v, "  ")
+		if err != nil {
+			log.Printf("error rendering %v: %s", v, err)
+			str = fmt.Sprintf("%v", v)
+		}
+		return str
 	default:
 		fmt.Printf("type unknown %T, blindly string-ifying: %v", v, v)
 		return fmt.Sprintf("%v", v)

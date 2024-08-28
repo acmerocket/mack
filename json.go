@@ -88,8 +88,8 @@ func loadJsonFile(path string) (map[string]interface{}, error) {
 	return js, nil
 }
 
-func RenderJson(data interface{}) (string, error) {
-	val, err := json.MarshalIndent(data, "", "") // fixme settings?
+func RenderJson(data interface{}, indent string) (string, error) {
+	val, err := json.MarshalIndent(data, "", indent)
 	if err != nil {
 		return "", err
 	}
@@ -116,7 +116,7 @@ func (f json_printer) renderNode(data any) interface{} {
 	case *jsonquery.Node:
 		return v.Value()
 	case *html.Node:
-		return nodeStr(v)
+		return RenderHtml(v)
 	default:
 		fmt.Printf("type unknown %T, blindly string-ifying: %v", v, v)
 		return fmt.Sprintf("%v", v)

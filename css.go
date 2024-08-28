@@ -61,7 +61,7 @@ func (g cssSelect) printHtmlNode(path string, list []*html.Node) {
 	match := match{path: path}
 	for _, p := range list {
 		// TODO is there any way to get line and col #?
-		match.add(0, 0, nodeStr(p), true)
+		match.add(0, 0, RenderHtml(p), true)
 	}
 	g.printer.print(match)
 }
@@ -93,24 +93,13 @@ func loadMarkdownFile(path string) (*html.Node, error) {
 	return html.Parse(bytes.NewReader(html_bytes))
 }
 
-// TODO - move to html package?
 // what is area for "extracting text?" default css results?
-func nodeStr(node *html.Node) string {
+func RenderHtml(node *html.Node) string {
 	var buf bytes.Buffer
-	//collectText(node, &buf)
-	err := html.Render(&buf, node)
+	err := html.Render(&buf, node) // TODO - abstract render(stream) insteam of print, render(s, result)
 	if err != nil {
 		log.Fatal("Error rendering ", node.Data, err)
 	}
 
 	return buf.String()
 }
-
-// func collectText(n *html.Node, buf *bytes.Buffer) {
-// 	if n.Type == html.TextNode {
-// 		buf.WriteString(n.Data)
-// 	}
-// 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-// 		collectText(c, buf)
-// 	}
-// }
