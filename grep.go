@@ -73,12 +73,11 @@ func newGrepper(pattern pattern, printer printer, opts Option) grepper {
 		return NewXpathQuery(pattern, printer)
 	} else if opts.SearchOption.CssSelect {
 		return NewCssSelect(pattern, printer)
-		//} else if opts.SearchOption.JsonQuery {
-		//	// FIXME
+	} else if opts.SearchOption.JsonQuery {
+		return NewJsonQuery(pattern, printer)
 		//	return extendedGrep{
 		//		pattern:  pattern,
 		//		lineGrep: newLineGrep(printer, opts),
-		//	}
 	} else {
 		if opts.OutputOption.Before > 0 || opts.OutputOption.After > 0 {
 			return fixedGrep{

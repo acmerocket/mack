@@ -76,9 +76,9 @@ func (p MarkdownAck) Run(args []string) int {
 	if opts.SearchOption.XpathQuery && opts.FileTypeOption.FileType == nil {
 		opts.FileTypeOption.FileType = []string{"markdown", "html", "xml", "json"}
 	}
-	//if opts.SearchOption.JsonQuery {
-	//	opts.FileTypeOption.FileType = []string{"json"}
-	//}
+	if opts.SearchOption.JsonQuery {
+		opts.FileTypeOption.FileType = []string{"json"}
+	}
 
 	if len(opts.FileTypeOption.FileType) > 0 {
 		// got filetype option, gather all extentions

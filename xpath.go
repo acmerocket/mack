@@ -19,11 +19,6 @@ type xpathSelect struct {
 }
 
 func NewXpathQuery(pattern pattern, printer printer) xpathSelect {
-	// parse the pattnern
-	//sel, err := cascadia.Parse(string(pattern.pattern))
-	//if err != nil {
-	//	log.Fatalf("invalid pattern '%s': %s\n", string(pattern.pattern), err)
-	//}
 	return xpathSelect{
 		pattern: string(pattern.pattern),
 		printer: printer,
@@ -68,7 +63,7 @@ func (g xpathSelect) grep(path string, buf []byte) {
 			}
 			g.printXmlNode(path, list)
 		case "json":
-			doc, err := loadJsonFile(path)
+			doc, err := g.loadJsonFile(path)
 			if err != nil {
 				log.Fatalf("error parsing file '%s': %s\n", path, err)
 			}
@@ -89,7 +84,7 @@ func (g xpathSelect) printHtmlNode(path string, list []*html.Node) {
 	match := match{path: path}
 	for _, p := range list {
 		// TODO is there any way to get line and col #?
-		match.add(0, 0, nodeStr(p), true)
+		match.add(0, 0, p, true)
 	}
 	g.printer.print(match)
 }
@@ -98,7 +93,7 @@ func (g xpathSelect) printXmlNode(path string, list []*xmlquery.Node) {
 	match := match{path: path}
 	for _, p := range list {
 		// TODO is there any way to get line and col #?
-		match.add(0, 0, p.InnerText(), true)
+		match.add(0, 0, p, true)
 	}
 	g.printer.print(match)
 }
@@ -108,7 +103,7 @@ func (g xpathSelect) printJsonNode(path string, list []*jsonquery.Node) {
 	for _, p := range list {
 		// TODO is there any way to get line and col #?
 		// FIXME - json result?
-		match.add(0, 0, p.InnerText(), true)
+		match.add(0, 0, p, true)
 	}
 	g.printer.print(match)
 }
@@ -133,7 +128,7 @@ func loadXmlFile(path string) (*xmlquery.Node, error) {
 	return xmlquery.Parse(bufio.NewReader(f))
 }
 
-func loadJsonFile(path string) (*jsonquery.Node, error) {
+func (g xpathSelect) loadJsonFile(path string) (*jsonquery.Node, error) {
 	f, err := getFileHandler(path)
 	if err != nil {
 		log.Fatalf("loadJsonFile: %s\n", err)

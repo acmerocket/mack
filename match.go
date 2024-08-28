@@ -8,11 +8,11 @@ type match struct {
 type line struct {
 	num     int
 	column  int
-	text    string
+	text    any
 	matched bool
 }
 
-func (m *match) add(num int, column int, text string, matched bool) {
+func (m *match) add(num int, column int, text any, matched bool) {
 	m.lines = append(m.lines, line{
 		num:     num,
 		column:  column,

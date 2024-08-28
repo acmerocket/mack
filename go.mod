@@ -19,6 +19,11 @@ require (
 require github.com/antchfx/jsonquery v1.3.5
 
 require (
+	github.com/itchyny/gojq v0.12.16 // indirect
+	github.com/itchyny/timefmt-go v0.1.6 // indirect
+)
+
+require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/antchfx/htmlquery v1.3.2
 	github.com/antchfx/xmlquery v1.4.1

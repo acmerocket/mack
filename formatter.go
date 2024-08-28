@@ -1,11 +1,13 @@
 package mack
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 
+	"github.com/antchfx/jsonquery"
 	"github.com/shiena/ansicolor"
+	"golang.org/x/net/html"
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"
 )
@@ -16,7 +18,7 @@ type formatPrinter interface {
 
 func newFormatPrinter(pattern pattern, w io.Writer, opts Option) formatPrinter {
 	writer := newWriter(w, opts)
-	decorator := newDecorator(pattern, opts)
+	decorator := newDecorator(pattern, opts) // decorator is for rich terminal output only. the "printer" controls output format.
 
 	switch {
 	case opts.SearchOption.SearchStream:
@@ -48,7 +50,7 @@ func (f matchLine) print(match match) {
 		}
 		fmt.Fprintln(f.w,
 			column+
-				f.decorator.match(line.text, line.matched),
+				f.decorator.match(line.text.(string), line.matched),
 		)
 	}
 }
@@ -113,10 +115,31 @@ func (f group) print(match match) {
 		fmt.Fprintln(f.w,
 			lineNum+
 				column+
-				f.decorator.match(line.text, line.matched),
+				f.decorator.match(f.render_line(line.text), line.matched),
 		)
 	}
 	fmt.Fprintln(f.w)
+}
+
+func (f group) render_line(line any) string {
+	switch v := line.(type) {
+	case nil:
+		return ""
+	case string:
+		return v
+	case *jsonquery.Node:
+		str, err := RenderJson(v.Value())
+		if err != nil {
+			log.Printf("error rendering %v: %s", v, err)
+			str = fmt.Sprintf("%v", v)
+		}
+		return str
+	case *html.Node:
+		return nodeStr(v)
+	default:
+		fmt.Printf("type unknown %T, blindly string-ifying: %v", v, v)
+		return fmt.Sprintf("%v", v)
+	}
 }
 
 type noGroup struct {
@@ -144,7 +167,7 @@ func (f noGroup) print(match match) {
 			path+
 				lineNum+
 				column+
-				f.decorator.match(line.text, line.matched),
+				f.decorator.match(line.text.(string), line.matched),
 		)
 	}
 }
@@ -166,48 +189,4 @@ func newWriter(out io.Writer, opts Option) io.Writer {
 		return ansicolor.NewAnsiColorWriter(encoder)
 	}
 	return encoder
-}
-
-type json_printer struct {
-	encoder          *json.Encoder
-	w                io.Writer
-	enableLineNumber bool
-}
-
-func NewJsonPrinter(w io.Writer, opts *OutputOption) json_printer {
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "") // FIXME opts.JsonPrefix, opts.JsonIndent
-	enc.SetEscapeHTML(false)
-	return json_printer{encoder: enc, w: w, enableLineNumber: opts.EnableLineNumber}
-}
-
-func (f json_printer) print(match match) {
-	for _, line := range match.lines {
-		if f.enableLineNumber {
-			// wrap the match in a json struct that includes
-			// match.path,
-
-			data := map[string]interface{}{
-				"path":    match.path,
-				"text":    line.text,
-				"matched": line.matched,
-			}
-			if line.num > 0 {
-				data["line"] = line.num
-			}
-			if line.column > 0 {
-				data["column"] = line.column
-			}
-			if err := f.encoder.Encode(data); err != nil {
-				// invalid json, assume raw string and just print it, in quotes
-				fmt.Fprintln(f.w, data)
-			}
-		} else if line.matched {
-			if err := f.encoder.Encode(line.text); err != nil {
-				// invalid json, assume raw string and just print it, in quotes
-				fmt.Fprintln(f.w, line.text)
-			}
-		}
-		// line didn't match
-	}
 }
