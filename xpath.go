@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/antchfx/htmlquery"
+	"github.com/antchfx/jsonquery"
 	"github.com/antchfx/xmlquery"
 
 	"golang.org/x/net/html"
@@ -66,6 +67,16 @@ func (g xpathSelect) grep(path string, buf []byte) {
 				log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
 			}
 			g.printXmlNode(path, list)
+		case "json":
+			doc, err := loadJsonFile(path)
+			if err != nil {
+				log.Fatalf("error parsing file '%s': %s\n", path, err)
+			}
+			list, err := jsonquery.QueryAll(doc, g.pattern)
+			if err != nil {
+				log.Fatalf("Error running query %s, on %s: %s\n", g.pattern, path, err)
+			}
+			g.printJsonNode(path, list)
 		default:
 			log.Println("unknown file extention, skipping: ", filepath.Ext(path), " ", path)
 		}
@@ -92,10 +103,20 @@ func (g xpathSelect) printXmlNode(path string, list []*xmlquery.Node) {
 	g.printer.print(match)
 }
 
+func (g xpathSelect) printJsonNode(path string, list []*jsonquery.Node) {
+	match := match{path: path}
+	for _, p := range list {
+		// TODO is there any way to get line and col #?
+		// FIXME - json result?
+		match.add(0, 0, p.InnerText(), true)
+	}
+	g.printer.print(match)
+}
+
 func loadHtmlFile(path string) (*html.Node, error) {
 	f, err := getFileHandler(path)
 	if err != nil {
-		log.Fatalf("open: %s\n", err)
+		log.Fatalf("loadHtmlFile: %s\n", err)
 	}
 	defer f.Close()
 
@@ -105,11 +126,21 @@ func loadHtmlFile(path string) (*html.Node, error) {
 func loadXmlFile(path string) (*xmlquery.Node, error) {
 	f, err := getFileHandler(path)
 	if err != nil {
-		log.Fatalf("open: %s\n", err)
+		log.Fatalf("loadXmlFile: %s\n", err)
 	}
 	defer f.Close()
 
 	return xmlquery.Parse(bufio.NewReader(f))
+}
+
+func loadJsonFile(path string) (*jsonquery.Node, error) {
+	f, err := getFileHandler(path)
+	if err != nil {
+		log.Fatalf("loadJsonFile: %s\n", err)
+	}
+	defer f.Close()
+
+	return jsonquery.Parse(bufio.NewReader(f))
 }
 
 func hasExtension(path, type_str string) bool {

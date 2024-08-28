@@ -16,6 +16,8 @@ require (
 	golang.org/x/text v0.16.0
 )
 
+require github.com/antchfx/jsonquery v1.3.5
+
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/antchfx/htmlquery v1.3.2
