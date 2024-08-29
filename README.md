@@ -13,20 +13,28 @@ mack (working title) - `ack` with markdown support
 ## Features
 
 ### File Selection
-List files (without searching) with `-f`. By default, `mack` searches recursively starting at the current directory.
+List files with `-f`. By default, `mack` searches recursively starting at the current directory.
 ```
-mack -f # FIXME - not working
-mack -f some/path # FIXME
+mack -f
+mack -f ./files
 ```
 
-Select file by type with `-t`. `-l` to *list* files instead of applying the query:
+List files restricted by regex using `-g`:
+```
+mack -g .md
+mack -g .html ./files
+```
+
+Select file by type with `-t`. `-l` to *list* files instead of applying a query:
 ```
 mack -t markdown -l "##"
+mack -t json -l "description" ./files
 ```
 
-Limit file types based on all known file types with `-k` or `--known-types`. `-e` specifies a REGEX.
+Limit file types based on all known file types with `-k` or `--known-types`.
 ```
-mack --known-types -e "^# "
+mack --k "##"
+mack --known-types "# "
 ```
 
 To list all know file types:
