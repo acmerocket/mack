@@ -20,7 +20,7 @@ type decorator interface {
 	match(line string, matched bool) string
 }
 
-func newDecorator(pattern pattern, option Option) decorator {
+func newDecorator(pattern regex_pattern, option Option) decorator {
 	if option.OutputOption.EnableColor {
 		return newColor(pattern, option)
 	} else {
@@ -38,7 +38,7 @@ type term_color struct {
 	colorMatch      string
 }
 
-func newColor(pattern pattern, option Option) term_color {
+func newColor(pattern regex_pattern, option Option) term_color {
 	color := term_color{
 		colorLineNumber: ansiEscape(option.OutputOption.ColorCodeLineNumber),
 		colorPath:       ansiEscape(option.OutputOption.ColorCodePath),

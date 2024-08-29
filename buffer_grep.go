@@ -10,7 +10,7 @@ import (
 
 type bufferGrep struct {
 	printer
-	pattern pattern
+	pattern regex_pattern
 	column  bool
 }
 

@@ -18,7 +18,7 @@ type cssSelect struct {
 	printer printer
 }
 
-func NewCssSelect(pattern pattern, printer printer) cssSelect {
+func NewCssSelect(pattern regex_pattern, printer printer) cssSelect {
 	// parse the pattnern
 	sel, err := cascadia.Parse(string(pattern.pattern))
 	if err != nil {

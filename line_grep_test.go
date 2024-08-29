@@ -54,7 +54,7 @@ files/context/context.txt:6:go test
 
 func assertLineGrep(opts Option, path string, expect string) bool {
 	buf := new(bytes.Buffer)
-	printer := newPrinter(pattern{}, buf, opts)
+	printer := newPrinter(regex_pattern{}, buf, opts)
 	grep := newLineGrep(printer, opts)
 
 	f, _ := os.Open(path)

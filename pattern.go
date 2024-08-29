@@ -2,15 +2,15 @@ package mack
 
 import "regexp"
 
-// pattern should be interface, but match(large []byte) method called through interface is too slow.
-type pattern struct {
+// regex_pattern should be interface, but match(large []byte) method called through interface is too slow.
+type regex_pattern struct {
 	pattern []byte
 	regexp  *regexp.Regexp
 	opts    Option
 }
 
-func newPattern(p string, opts Option) (pattern, error) {
-	pattern := pattern{pattern: []byte(p), opts: opts}
+func newPattern(p string, opts Option) (regex_pattern, error) {
+	pattern := regex_pattern{pattern: []byte(p), opts: opts}
 
 	if opts.SearchOption.Regexp {
 		var reg *regexp.Regexp

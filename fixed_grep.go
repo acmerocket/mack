@@ -10,7 +10,7 @@ import (
 
 type fixedGrep struct {
 	lineGrep
-	pattern pattern
+	pattern regex_pattern
 }
 
 func (g fixedGrep) grep(path string, buf []byte) {

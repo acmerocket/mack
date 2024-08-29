@@ -15,8 +15,11 @@ func init() {
 	}
 }
 
-func main() {
+func run(args []string) int {
 	mack := mack.MarkdownAck{Out: os.Stdout, Err: os.Stderr}
-	exitCode := mack.Run(os.Args[1:])
-	os.Exit(exitCode)
+	return mack.Run(args)
+}
+
+func main() {
+	os.Exit(run(os.Args[1:]))
 }

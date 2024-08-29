@@ -11,7 +11,7 @@ type printer struct {
 	done      chan struct{}
 }
 
-func newPrinter(pattern pattern, out io.Writer, opts Option) printer {
+func newPrinter(pattern regex_pattern, out io.Writer, opts Option) printer {
 	p := printer{
 		in:        make(chan match, 200),
 		opts:      opts,

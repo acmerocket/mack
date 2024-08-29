@@ -8,7 +8,7 @@ import (
 
 type extendedGrep struct {
 	lineGrep
-	pattern pattern
+	pattern regex_pattern
 }
 
 func (g extendedGrep) grep(path string, buf []byte) {

@@ -16,7 +16,7 @@ type grep struct {
 	opts    Option
 }
 
-func newGrep(pattern pattern, in chan string, done chan struct{}, opts Option, printer printer) grep {
+func newGrep(pattern regex_pattern, in chan string, done chan struct{}, opts Option, printer printer) grep {
 	return grep{
 		in:   in,
 		done: done,
@@ -54,7 +54,7 @@ type grepper interface {
 	grep(path string, buf []byte)
 }
 
-func newGrepper(pattern pattern, printer printer, opts Option) grepper {
+func newGrepper(pattern regex_pattern, printer printer, opts Option) grepper {
 	if opts.SearchOption.EnableFilesWithRegexp {
 		return passthroughGrep{
 			printer: printer,

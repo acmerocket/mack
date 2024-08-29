@@ -119,7 +119,7 @@ type SearchOption struct {
 	GlobalGitIgnore        bool         `long:"global-gitignore" description:"Use git's global gitignore file for ignore patterns"`
 	HomePtIgnore           bool         `long:"home-ptignore" description:"Use $Home/.ptignore file for ignore patterns"`
 	SkipVcsIgnore          bool         `short:"U" long:"skip-vcs-ignores" description:"Don't use VCS ignore file for ignore patterns"`
-	FileNamesOnly          bool         `short:"f" description:"Only print the files selected, without searching. The PATTERN must not be specified."`
+	FileNamesOnly          func()       `short:"f" description:"Only print the files selected, without searching. The PATTERN must not be specified."`
 	FilesWithRegexp        func(string) `short:"g" description:"Print filenames matching PATTERN"`
 	EnableFilesWithRegexp  bool         // Enable files with regexp. Not user option.
 	PatternFilesWithRegexp string       // Pattern files with regexp. Not user option.
@@ -138,9 +138,15 @@ func (o *SearchOption) SetFilesWithRegexp(p string) {
 	o.PatternFilesWithRegexp = p
 }
 
+func (o *SearchOption) SetFileNamesOnly() {
+	o.EnableFilesWithRegexp = true
+	o.PatternFilesWithRegexp = ""
+}
+
 func newSearchOption() *SearchOption {
 	opt := &SearchOption{}
 	opt.FilesWithRegexp = opt.SetFilesWithRegexp
+	opt.FileNamesOnly = opt.SetFileNamesOnly
 	return opt
 }
 

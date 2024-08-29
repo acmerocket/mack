@@ -17,7 +17,7 @@ type xpathSelect struct {
 	printer printer
 }
 
-func NewXpathQuery(pattern pattern, printer printer) xpathSelect {
+func NewXpathQuery(pattern regex_pattern, printer printer) xpathSelect {
 	return xpathSelect{
 		pattern: string(pattern.pattern),
 		printer: printer,

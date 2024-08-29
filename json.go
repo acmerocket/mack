@@ -17,7 +17,7 @@ type jsonQuery struct {
 	printer printer
 }
 
-func NewJsonQuery(pattern pattern, printer printer) jsonQuery {
+func NewJsonQuery(pattern regex_pattern, printer printer) jsonQuery {
 	// parse the pattern
 	query, err := gojq.Parse(string(pattern.pattern))
 	if err != nil {

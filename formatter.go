@@ -16,7 +16,7 @@ type formatPrinter interface {
 	print(match match)
 }
 
-func newFormatPrinter(pattern pattern, w io.Writer, opts Option) formatPrinter {
+func newFormatPrinter(pattern regex_pattern, w io.Writer, opts Option) formatPrinter {
 	writer := newWriter(w, opts)
 	decorator := newDecorator(pattern, opts) // decorator is for rich terminal output only. the "printer" controls output format.
 

@@ -14,7 +14,7 @@ import (
 	"github.com/monochromegane/terminal"
 )
 
-const version = "0.1.0"
+const version = "0.5.0b"
 
 const (
 	ExitCodeOK = iota
@@ -28,15 +28,15 @@ type MarkdownAck struct {
 }
 
 func (p MarkdownAck) Run(args []string) int {
-	InitFileTypes()
+	InitFileTypes() // only init if file_types needed
 	parser := newOptionParser(&opts)
 
 	conflag.LongHyphen = true
 	conflag.BoolValue = false
 	for _, c := range [...]string{
-		filepath.Join(xdgConfigHomeDir(), "pt", "config.toml"),
-		filepath.Join(home.Dir(), ".ptconfig.toml"),
-		".ptconfig.toml",
+		filepath.Join(xdgConfigHomeDir(), "mack", "config.toml"),
+		filepath.Join(home.Dir(), ".mack-config.toml"),
+		".mack-config.toml",
 	} {
 		if args, err := conflag.ArgsFrom(c); err == nil {
 			parser.ParseArgs(args)
@@ -67,9 +67,6 @@ func (p MarkdownAck) Run(args []string) int {
 	}
 
 	// override file types based on specialized query language
-	//if opts.SearchOption.HtmlQuery {
-	//	opts.FileTypeOption.FileType = []string{"html"}
-	//}
 	if opts.SearchOption.CssSelect && opts.FileTypeOption.FileType == nil {
 		opts.FileTypeOption.FileType = []string{"markdown", "html"}
 	}
@@ -85,8 +82,7 @@ func (p MarkdownAck) Run(args []string) int {
 		extentions := uniq_exts_from_file_types(opts.FileTypeOption.FileType)
 		regex_str := regex_from_file_exts(extentions)
 
-		if opts.SearchOption.FileNamesOnly {
-			opts.SearchOption.EnableFilesWithRegexp = true
+		if opts.SearchOption.EnableFilesWithRegexp {
 			opts.SearchOption.PatternFilesWithRegexp = regex_str
 		} else {
 			opts.SearchOption.FileSearchRegexp = regex_str
@@ -97,8 +93,7 @@ func (p MarkdownAck) Run(args []string) int {
 		// build a map of *all* extensions
 		regex_str := regex_from_file_exts(known_extentions)
 
-		if opts.SearchOption.FileNamesOnly {
-			opts.SearchOption.EnableFilesWithRegexp = true
+		if opts.SearchOption.EnableFilesWithRegexp {
 			opts.SearchOption.PatternFilesWithRegexp = regex_str
 		} else {
 			opts.SearchOption.FileSearchRegexp = regex_str
@@ -139,7 +134,8 @@ func (p MarkdownAck) Run(args []string) int {
 		out:   p.Out,
 	}
 
-	if err = search.start(p.patternFrom(args)); err != nil {
+	patt := p.patternFrom(args)
+	if err = search.start(patt); err != nil {
 		fmt.Fprintf(p.Err, "%s\n", err)
 		return ExitCodeError
 	}

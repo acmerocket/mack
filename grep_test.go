@@ -117,7 +117,7 @@ func TestStdinGrep(t *testing.T) {
 	}
 }
 
-func assertGrep(pattern pattern, opts Option, paths, asserts []string) bool {
+func assertGrep(pattern regex_pattern, opts Option, paths, asserts []string) bool {
 	buf := new(bytes.Buffer)
 	printer := newPrinter(pattern, buf, opts)
 
