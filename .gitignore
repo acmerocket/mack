@@ -1,9 +1,3 @@
-*.test
-mack
-pt
-!cmd/pt
-Godeps/_workspace/
-main
 .vscode/
 .DS_Store
 .cover.html
