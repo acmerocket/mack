@@ -3,6 +3,7 @@ package mack
 import (
 	"math"
 	"runtime"
+	"strings"
 	"sync"
 )
 
@@ -36,6 +37,7 @@ func (g grep) start() {
 		defer wg.Done()
 		buf := make([]byte, 16384)
 		for path := range g.in {
+			path = strings.TrimPrefix(path, "./")
 			g.grepper.grep(path, buf)
 		}
 	}

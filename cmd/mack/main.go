@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"runtime"
 
@@ -15,11 +16,11 @@ func init() {
 	}
 }
 
-func run(args []string) int {
-	mack := mack.MarkdownAck{Out: os.Stdout, Err: os.Stderr}
+func run_main(args []string, stdout, stderr io.Writer) int {
+	mack := mack.MarkdownAck{Out: stdout, Err: stderr}
 	return mack.Run(args)
 }
 
 func main() {
-	os.Exit(run(os.Args[1:]))
+	os.Exit(run_main(os.Args[1:], os.Stdout, os.Stderr))
 }

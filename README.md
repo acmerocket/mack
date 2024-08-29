@@ -33,7 +33,7 @@ mack -t json -l "description" ./files
 
 Limit file types based on all known file types with `-k` or `--known-types`.
 ```
-mack --k "##"
+mack -k "##"
 mack --known-types "# "
 ```
 
