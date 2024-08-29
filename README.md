@@ -1,6 +1,6 @@
 # mack
 
-**`tl;dr: ack + xpath + jq + css`**
+**`tldr: ack + xpath + jq + css`**
 
 `mack` provides a simple CLI for a three-stage parallel process to:
 1. Select files from the file system, based on name or type
